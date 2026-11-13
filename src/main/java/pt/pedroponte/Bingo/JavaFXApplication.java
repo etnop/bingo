@@ -23,6 +23,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 public class JavaFXApplication extends Application {
 
+    static {
+        // splash enquanto o Spring arranca; aqui para valer no javafx:run e no executável
+        System.setProperty("javafx.preloader", Splash.class.getName());
+    }
+
     public static ConfigurableApplicationContext springContext;
     public static List<List<List<String>>> cartoes = new ArrayList<>();
     // ponytail: uma sessão = um ficheiro de texto (um cartão por linha); trocar por JSON/BD se precisar de mais dados
