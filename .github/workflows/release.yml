@@ -36,6 +36,9 @@ jobs:
           # junta a pasta num único Bingo.exe (extrai-se sozinho na 1ª execução)
           Invoke-WebRequest https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile warp-packer.exe
           ./warp-packer.exe --arch windows-x64 --input_dir jp-out/Bingo --exec Bingo.exe --output dist/Bingo.exe
+          # o runner do warp é de consola: marca o .exe como GUI para não abrir janela preta
+          # (= editbin /SUBSYSTEM:WINDOWS; campo Subsystem no cabeçalho PE, 2 = GUI)
+          python -c "import struct;p='dist/Bingo.exe';b=bytearray(open(p,'rb').read());pe=struct.unpack_from('<I',b,0x3C)[0];struct.pack_into('<H',b,pe+0x5C,2);open(p,'wb').write(b)"
       - uses: actions/upload-artifact@v4
         with: { name: windows, path: dist/Bingo.exe }
 
