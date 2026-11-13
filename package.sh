@@ -19,10 +19,10 @@ mkdir -p "$TOOLS"
 
 ./mvnw -q -DskipTests package
 rm -rf dist target/jp-in target/jp-linux target/Bingo.AppDir && mkdir -p dist target/jp-in
-cp target/Bingo-0.0.1-SNAPSHOT.jar target/jp-in/bingo.jar
+cp target/Bingo-2.0.0.jar target/jp-in/bingo.jar
 
 echo "== Linux (AppImage)"
-jpackage --type app-image --name Bingo --input target/jp-in --main-jar bingo.jar \
+jpackage --type app-image --name Bingo --input target/jp-in --main-jar bingo.jar --app-version 2.0.0 \
   --dest target/jp-linux --java-options "$OPTS"
 APPDIR=target/Bingo.AppDir
 cp -r target/jp-linux/Bingo "$APPDIR"
@@ -49,7 +49,7 @@ if [[ -x "$WIN_JDK/bin/jpackage.exe" ]]; then
   rm -rf "$W/in" "$W/out" && mkdir -p "$W/in"
   cp target/jp-in/bingo.jar "$W/in/"
   "$WIN_JDK/bin/jpackage.exe" --type app-image --name Bingo \
-    --input "$(wslpath -w "$W/in")" --main-jar bingo.jar \
+    --input "$(wslpath -w "$W/in")" --main-jar bingo.jar --app-version 2.0.0 \
     --dest "$(wslpath -w "$W/out")" --java-options "$OPTS"
   # junta a pasta num único .exe (extrai-se sozinho na 1ª execução)
   $TOOLS/warp-packer --arch windows-x64 --input_dir "$W/out/Bingo" --exec Bingo.exe --output dist/Bingo.exe

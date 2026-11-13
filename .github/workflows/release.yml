@@ -7,7 +7,7 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   linux:
@@ -31,8 +31,8 @@ jobs:
         run: |
           ./mvnw.cmd -q -DskipTests package
           New-Item -ItemType Directory -Force jp-in, dist | Out-Null
-          Copy-Item target/Bingo-0.0.1-SNAPSHOT.jar jp-in/bingo.jar
-          jpackage --type app-image --name Bingo --input jp-in --main-jar bingo.jar --dest jp-out --java-options "--enable-native-access=ALL-UNNAMED"
+          Copy-Item target/Bingo-2.0.0.jar jp-in/bingo.jar
+          jpackage --type app-image --name Bingo --input jp-in --main-jar bingo.jar --app-version 2.0.0 --dest jp-out --java-options "--enable-native-access=ALL-UNNAMED"
           # junta a pasta num único Bingo.exe (extrai-se sozinho na 1ª execução)
           Invoke-WebRequest https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile warp-packer.exe
           ./warp-packer.exe --arch windows-x64 --input_dir jp-out/Bingo --exec Bingo.exe --output dist/Bingo.exe
@@ -42,10 +42,12 @@ jobs:
   release:
     needs: [linux, windows]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v4
         with: { path: dist, merge-multiple: true }
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           files: |
             dist/Bingo-x86_64.AppImage
