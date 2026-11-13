@@ -1,7 +1,7 @@
 name: release
 
 # push de uma tag v* (ex.: git tag v1.0.0 && git push origin v1.0.0)
-# gera Bingo-x86_64.AppImage (Linux) e Bingo.exe (Windows) e publica a release
+# gera Bingo-x86_64.AppImage (Linux) e o instalador Bingo-2.0.0.exe (Windows) e publica a release
 on:
   push:
     tags: ["v*"]
@@ -26,21 +26,28 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "25" }
+      - name: WiX (usado pelo jpackage para o instalador)
+        shell: pwsh
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          wix extension add -g WixToolset.Util.wixext/5.0.2 WixToolset.UI.wixext/5.0.2
       - name: build
         shell: pwsh
         run: |
           ./mvnw.cmd -q -DskipTests package
           New-Item -ItemType Directory -Force jp-in, dist | Out-Null
           Copy-Item target/Bingo-2.0.0.jar jp-in/bingo.jar
-          jpackage --type app-image --name Bingo --input jp-in --main-jar bingo.jar --app-version 2.0.0 --dest jp-out --java-options "--enable-native-access=ALL-UNNAMED"
-          # junta a pasta num único Bingo.exe (extrai-se sozinho na 1ª execução)
-          Invoke-WebRequest https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile warp-packer.exe
-          ./warp-packer.exe --arch windows-x64 --input_dir jp-out/Bingo --exec Bingo.exe --output dist/Bingo.exe
-          # o runner do warp é de consola: marca o .exe como GUI para não abrir janela preta
-          # (= editbin /SUBSYSTEM:WINDOWS; campo Subsystem no cabeçalho PE, 2 = GUI)
-          python -c "import struct;p='dist/Bingo.exe';b=bytearray(open(p,'rb').read());pe=struct.unpack_from('<I',b,0x3C)[0];struct.pack_into('<H',b,pe+0x5C,2);open(p,'wb').write(b)"
+          # instalador: instala uma vez, atalho no menu Iniciar e no ambiente de trabalho
+          jpackage --type exe --name Bingo --app-version 2.0.0 --vendor "Pedro Ponte" `
+            --input jp-in --main-jar bingo.jar --dest dist `
+            --icon src/main/resources/icon.ico `
+            --win-menu --win-shortcut --win-dir-chooser `
+            --win-upgrade-uuid 6f1c2a4e-9b7d-4c3e-8a51-2d0f6e9b7c11 `
+            --add-modules java.base,java.desktop,java.logging,java.management,java.naming,java.sql,java.xml,java.scripting,java.instrument,java.prefs,jdk.unsupported,jdk.crypto.ec `
+            --jlink-options "--strip-debug --no-man-pages --no-header-files" `
+            --java-options "--enable-native-access=ALL-UNNAMED"
       - uses: actions/upload-artifact@v4
-        with: { name: windows, path: dist/Bingo.exe }
+        with: { name: windows, path: dist/Bingo-2.0.0.exe }
 
   release:
     needs: [linux, windows]
@@ -54,5 +61,5 @@ jobs:
         with:
           files: |
             dist/Bingo-x86_64.AppImage
-            dist/Bingo.exe
+            dist/Bingo-2.0.0.exe
           generate_release_notes: true

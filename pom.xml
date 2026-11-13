@@ -51,11 +51,6 @@
 			<artifactId>javafx-fxml</artifactId>
 			<version>23</version>
 		</dependency>
-<dependency>
-    <groupId>cn.ipokerface</groupId>
-    <artifactId>snowflake-id-generator-spring</artifactId>
-    <version>2.3.0</version> <!-- Verificar a versão atual no repositório -->
-</dependency>
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>

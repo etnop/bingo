@@ -10,6 +10,8 @@ cd "$(dirname "$0")"
 WIN_JDK=${WIN_JDK:-/mnt/c/Users/$USER/AppData/Local/Temp/bingo-build/jdk-25.0.5+8}
 TOOLS=target/tools
 OPTS="--enable-native-access=ALL-UNNAMED"
+# só os módulos do Java que a app usa (runtime ~85 MB em vez de ~160 MB)
+SLIM=(--add-modules java.base,java.desktop,java.logging,java.management,java.naming,java.sql,java.xml,java.scripting,java.instrument,java.prefs,jdk.unsupported,jdk.crypto.ec --jlink-options "--strip-debug --no-man-pages --no-header-files")
 
 mkdir -p "$TOOLS"
 [[ -x $TOOLS/appimagetool ]] || { curl -sSL -o $TOOLS/appimagetool \
@@ -22,11 +24,11 @@ rm -rf dist target/jp-in target/jp-linux target/Bingo.AppDir && mkdir -p dist ta
 cp target/Bingo-2.0.0.jar target/jp-in/bingo.jar
 
 echo "== Linux (AppImage)"
-jpackage --type app-image --name Bingo --input target/jp-in --main-jar bingo.jar --app-version 2.0.0 \
+jpackage --type app-image --name Bingo --input target/jp-in --main-jar bingo.jar --app-version 2.0.0 "${SLIM[@]}" \
   --dest target/jp-linux --java-options "$OPTS"
 APPDIR=target/Bingo.AppDir
 cp -r target/jp-linux/Bingo "$APPDIR"
-cp src/main/resources/fxml/ellipse21.png "$APPDIR/bingo.png"
+cp src/main/resources/icon.png "$APPDIR/bingo.png"
 cat > "$APPDIR/AppRun" <<'EOF'
 #!/bin/sh
 exec "$(dirname "$(readlink -f "$0")")/bin/Bingo" "$@"
