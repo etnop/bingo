@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -24,14 +28,20 @@
                         <Button layoutX="26.0" layoutY="250.0" mnemonicParsing="false" onAction="#gestaoCartoes" prefHeight="84.0" prefWidth="247.0" text="Carregar Jogo" />
                </children>
             </Pane>
-            <Pane fx:id="pane_novo" layoutX="709.0" layoutY="2.0" prefHeight="484.0" prefWidth="305.0">
+            <VBox fx:id="pane_novo" layoutX="709.0" layoutY="40.0" prefWidth="290.0" spacing="10">
                <children>
-                        <Text fill="WHITE" layoutX="33.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numero de cartoes" wrappingWidth="168.7294921875" />
-                        <Spinner fx:id="quantidade" editable="true" layoutX="33.0" layoutY="145.0" prefHeight="26.0" prefWidth="135.0" />
-                        <Button layoutX="29.0" layoutY="324.0" mnemonicParsing="false" onAction="#gerarCartoes" prefHeight="76.0" prefWidth="247.0" text="Gerar" />
-                  <Line endX="-100.0" endY="309.0" layoutX="114.0" layoutY="70.0" startX="-100.0" stroke="#4d4c4c" strokeWidth="2.0" />
+                  <Label styleClass="panel-title" text="JOGAR COM UMA SESSÃO" />
+                  <ComboBox fx:id="sessoes" maxWidth="Infinity" />
+                  <Button fx:id="btnJogarSessao" maxWidth="Infinity" prefHeight="56.0" mnemonicParsing="false" onAction="#jogarSessao" text="Abrir sessão" />
+                  <Separator />
+                  <Label styleClass="panel-title" text="OU GERAR SESSÃO NOVA" />
+                  <HBox spacing="8" alignment="CENTER_LEFT">
+                     <Label text="Cartões" />
+                     <Spinner fx:id="quantidade" editable="true" prefWidth="100.0" />
+                  </HBox>
+                  <Button maxWidth="Infinity" prefHeight="56.0" mnemonicParsing="false" onAction="#gerarCartoes" text="Gerar sessão" />
                </children>
-            </Pane>
+            </VBox>
                </children>
             </Pane>
    </children>

@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +30,7 @@ import pt.pedroponte.Bingo.JavaFXApplication;
 import pt.pedroponte.Bingo.controllers.CartoesController;
 
 @Controller
+@Scope("prototype")
 public class MainController {
 
     @Autowired
@@ -41,13 +43,32 @@ public class MainController {
     @FXML
     private Pane pane_init;
     @FXML
-    private Pane pane_novo;
+    private javafx.scene.Node pane_novo;
+    @FXML
+    private javafx.scene.control.ComboBox<java.nio.file.Path> sessoes;
+    @FXML
+    private javafx.scene.control.Button btnJogarSessao;
 
     @FXML
     private Spinner quantidade;
 
     public void initialize() {
         quantidade.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999, 10));
+        sessoes.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(java.nio.file.Path p) {
+                return p == null ? "" : CartoesController.nomeSessao(p);
+            }
+
+            @Override
+            public java.nio.file.Path fromString(String s) {
+                return null;
+            }
+        });
+        sessoes.getItems().setAll(JavaFXApplication.listarSessoes());
+        sessoes.getSelectionModel().selectFirst();
+        sessoes.setPromptText("Sem sessões guardadas");
+        btnJogarSessao.disableProperty().bind(sessoes.valueProperty().isNull());
 
     }
 
@@ -64,11 +85,11 @@ public class MainController {
     public static List<List<String>> gerarCartao() {
 
         Map<String, int[]> intervalos = Map.of(
-                "B", new int[] { 1, 15 },
-                "I", new int[] { 16, 30 },
-                "N", new int[] { 31, 45 },
-                "G", new int[] { 46, 60 },
-                "O", new int[] { 61, 75 });
+                "B", new int[] { 1, 18 },
+                "I", new int[] { 19, 36 },
+                "N", new int[] { 37, 54 },
+                "G", new int[] { 55, 72 },
+                "O", new int[] { 73, 90 });
 
         Map<String, List<String>> cartao = new HashMap<>();
         Random rand = new Random();
@@ -77,7 +98,6 @@ public class MainController {
             int min = intervalos.get(coluna)[0];
             int max = intervalos.get(coluna)[1];
             int count = coluna.equals("N") ? 4 : 5;
-            System.out.println("min: " + min + " max: " + max + " count: " + count);
             List<String> numeros = new LinkedList<>();
             while (numeros.size() < count) {
                 int n = rand.nextInt(max - min + 1) + min;
@@ -130,37 +150,16 @@ public class MainController {
             }
             System.out.println();
         }
-        ConfigurableApplicationContext springContext = JavaFXApplication.springContext;
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/bingo.fxml"));
-            fxmlLoader.setControllerFactory(springContext::getBean);
-            Parent root = fxmlLoader.load();
-            Stage primaryStage = new Stage();
-            primaryStage.setTitle("JavaFX com Spring Boot");
-            primaryStage.setScene(new Scene(root));
-           
-            main.getScene().getWindow().hide();
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        JavaFXApplication.novaSessao();
+        JavaFXApplication.abrir("cartoes.fxml", main); // imprimir antes de jogar
     }
-    public void gestaoCartoes() {
-        ConfigurableApplicationContext springContext = JavaFXApplication.springContext;
 
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/cartoes.fxml"));
-            fxmlLoader.setControllerFactory(springContext::getBean);
-            Parent root = fxmlLoader.load();
-            Stage primaryStage = new Stage();
-            primaryStage.setTitle("JavaFX com Spring Boot");
-            primaryStage.setScene(new Scene(root));
-           
-            main.getScene().getWindow().hide();
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void jogarSessao() {
+        JavaFXApplication.sessaoAtual = sessoes.getValue();
+        JavaFXApplication.abrir("cartoes.fxml", main); // imprimir antes de jogar
+    }
+
+    public void gestaoCartoes() {
+        JavaFXApplication.abrir("cartoes.fxml", main);
     }
 }

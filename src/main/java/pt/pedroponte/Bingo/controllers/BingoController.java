@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javafx.animation.KeyFrame;
@@ -32,6 +33,7 @@ import javafx.util.Duration;
 import pt.pedroponte.Bingo.JavaFXApplication;
 
 @Controller
+@Scope("prototype")
 public class BingoController {
 
     @FXML
@@ -96,7 +98,6 @@ public class BingoController {
             this.list.add(i);
 
             Label label = new Label(String.valueOf(i));
-            label.setFont(javafx.scene.text.Font.font(37));
             label.setId("label_numero" + i);
             label.setCenterShape(true);
             label.getStyleClass().add("label_numero");
@@ -135,17 +136,24 @@ public class BingoController {
         alert.getDialogPane().setContent(textField);
         alert.showAndWait();
 
-        int playerName = Integer.parseInt(textField.getText());
+        if (textField.getText().isBlank()) return;
+        int total = JavaFXApplication.cartoes.size();
+        int playerName;
+        try {
+            playerName = Integer.parseInt(textField.getText().trim());
+        } catch (NumberFormatException e) {
+            playerName = -1;
+        }
+        if (playerName < 1 || playerName > total) {
+            new Alert(Alert.AlertType.WARNING, "Cartão inválido. Escolhe um número entre 1 e " + total + ".").showAndWait();
+            return;
+        }
         final boolean[] bingo = { true };
         try {
-                 
-
             List<List<String>> list2 = JavaFXApplication.cartoes.get(playerName - 1);
-            list2.get(2).remove(2);
             list2.forEach(linha -> {
                 linha.forEach(numero -> {
-                    System.out.println(numero);
-                    if (list.contains(Integer.parseInt(numero))) {
+                    if (!numero.equals("Livre") && list.contains(Integer.parseInt(numero))) {
                         bingo[0] = false;
 
                     }
@@ -208,17 +216,20 @@ public class BingoController {
 
         }
         Label label = (Label) numeros.lookup("#label_numero" + tirar);
-        label.setStyle("-fx-background-color: #458f22;");
+        label.getStyleClass().add("sorteado");
         iniciarPiscar(label);
 
         numeros.requestLayout();
     }
 
+    private Label aPiscar;
+
     private void iniciarPiscar(Label label) {
         pararPiscar(); // Garante que não há outra animação em execução
+        aPiscar = label;
         timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> label.setStyle("-fx-background-color: #458f22;")),
-                new KeyFrame(Duration.millis(500), e -> label.setStyle("-fx-background-color: #ff0000;")));
+                new KeyFrame(Duration.ZERO, e -> label.setStyle("")),
+                new KeyFrame(Duration.millis(500), e -> label.setStyle("-fx-background-color: #f39c12; -fx-border-color: #f5b041;")));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.setAutoReverse(true);
         timeline.play();
@@ -228,6 +239,10 @@ public class BingoController {
         if (timeline != null) {
             timeline.stop();
             timeline = null;
+        }
+        if (aPiscar != null) {
+            aPiscar.setStyle("");
+            aPiscar = null;
         }
     }
 
@@ -276,10 +291,10 @@ public class BingoController {
     public void handleToggleButton(Event event) {
         if (toggleButton.isSelected()) {
             autimaticCalling();
-            toggleButton.setText("Stop");
+            toggleButton.setText("Parar");
         } else {
             stopCalling();
-            toggleButton.setText("Start");
+            toggleButton.setText("Iniciar");
         }
     }
 }

@@ -1,0 +1,53 @@
+name: release
+
+# push de uma tag v* (ex.: git tag v1.0.0 && git push origin v1.0.0)
+# gera Bingo-x86_64.AppImage (Linux) e Bingo.exe (Windows) e publica a release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "25" }
+      - run: chmod +x mvnw package.sh && WIN_JDK=/none ./package.sh
+      - uses: actions/upload-artifact@v4
+        with: { name: linux, path: dist/Bingo-x86_64.AppImage }
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "25" }
+      - name: build
+        shell: pwsh
+        run: |
+          ./mvnw.cmd -q -DskipTests package
+          New-Item -ItemType Directory -Force jp-in, dist | Out-Null
+          Copy-Item target/Bingo-0.0.1-SNAPSHOT.jar jp-in/bingo.jar
+          jpackage --type app-image --name Bingo --input jp-in --main-jar bingo.jar --dest jp-out --java-options "--enable-native-access=ALL-UNNAMED"
+          # junta a pasta num único Bingo.exe (extrai-se sozinho na 1ª execução)
+          Invoke-WebRequest https://github.com/dgiagio/warp/releases/download/v0.3.0/windows-x64.warp-packer.exe -OutFile warp-packer.exe
+          ./warp-packer.exe --arch windows-x64 --input_dir jp-out/Bingo --exec Bingo.exe --output dist/Bingo.exe
+      - uses: actions/upload-artifact@v4
+        with: { name: windows, path: dist/Bingo.exe }
+
+  release:
+    needs: [linux, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Bingo-x86_64.AppImage
+            dist/Bingo.exe
+          generate_release_notes: true
