@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="main" minHeight="805.0" minWidth="1176.0" prefHeight="805.0" prefWidth="1176.0" stylesheets="@default.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.pedroponte.Bingo.controllers.BingoController">
+   <children>
+      <GridPane alignment="CENTER" minHeight="114.0" minWidth="1176.0" prefHeight="203.0" prefWidth="1176.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="label_numero" alignment="CENTER" contentDisplay="CENTER" prefHeight="149.0" prefWidth="160.0" text="99" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font size="96.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+      <GridPane prefHeight="607.0" prefWidth="1176.0" styleClass="grid-pane" VBox.vgrow="ALWAYS">
+         <columnConstraints>
+         <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="930.0" />
+         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="235.0" minWidth="10.0" prefWidth="235.0" />
+         </columnConstraints>
+         <rowConstraints>
+         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+         <HBox fx:id="numeros_altura" alignment="BOTTOM_CENTER" prefHeight="614.0" prefWidth="233.0" styleClass="grid-pane" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+            <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" pannable="true" prefHeight="605.0" prefWidth="939.0" style="-fx-border-width: 0;" styleClass="grid-pane" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+                  <content>
+                  <FlowPane fx:id="numeros" prefHeight="596.0" prefWidth="941.0" styleClass="grid-pane" />
+                  </content>
+               <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </ScrollPane>
+            </children>
+         </HBox>
+            <GridPane GridPane.columnIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="424.0" vgrow="ALWAYS" />
+                <RowConstraints fillHeight="false" maxHeight="181.0" minHeight="10.0" prefHeight="181.0" vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                     <children>
+                        <Pane layoutX="11.0" layoutY="272.0" prefHeight="80.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="3.0" layoutY="14.0" text="Automatic calling" />
+                              <Spinner fx:id="txtac" editable="true" layoutY="47.0" prefHeight="26.0" prefWidth="120.0" />
+                              <Label fx:id="timer_label" layoutX="132.0" layoutY="44.0" prefHeight="34.0" prefWidth="44.0" text="0" />
+                              <ToggleButton fx:id="toggleButton" layoutX="120.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleToggleButton" prefHeight="24.0" prefWidth="78.0" text="LiGADO" textAlignment="CENTER" wrapText="true" />
+                           </children>
+                        </Pane>
+                        <Label fx:id="contador" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="178.0" prefHeight="80.0" prefWidth="84.0" style="-fx-border-style: dashed; -fx-border-color: #ffff; -fx-border-width: 5;" styleClass="piscar" text="90">
+                           <font>
+                              <Font size="35.0" />
+                           </font></Label>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="18.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ellipse21.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="ultimoNumero" alignment="CENTER" contentDisplay="CENTER" layoutX="111.0" layoutY="178.0" prefHeight="80.0" prefWidth="84.0" style="-fx-border-style: dashed; -fx-border-color: #ffff; -fx-border-width: 5;" text="90">
+                           <font>
+                              <Font size="35.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <Button layoutX="13.0" layoutY="78.0" mnemonicParsing="false" onAction="#updateLabel" prefHeight="89.0" prefWidth="209.0" text="Proximo Numero" />
+                        <Button layoutX="13.0" layoutY="14.0" mnemonicParsing="false" onAction="#callbingo" prefHeight="56.0" prefWidth="209.0" text="BINGO" />
+                     </children>
+                  </Pane>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </children>
+</VBox>

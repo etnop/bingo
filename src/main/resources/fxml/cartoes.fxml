@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="main" minHeight="484.0" minWidth="705.0" prefHeight="557.0" prefWidth="836.0" stylesheets="@default.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.pedroponte.Bingo.controllers.CartoesController">
+   <children>
+            <Pane prefHeight="620.0" prefWidth="879.0">
+               <children>
+                  <ImageView fitHeight="125.0" fitWidth="208.0" layoutX="21.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@ellipse21.png" />
+                     </image>
+                  </ImageView>
+            <TableView layoutX="39.0" layoutY="188.0" prefHeight="286.0" prefWidth="714.0" fx:id="tbl_cartoes"> 
+              <columns>
+               <TableColumn fx:id="nameColumn" text="Name" prefWidth="200" />
+               <TableColumn fx:id="ageColumn" text="Age" prefWidth="100" />
+               
+              </columns>
+            </TableView>
+            <Button layoutX="661.0" layoutY="495.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="81.0" text="Voltar" />
+            <Button layoutX="241.0" layoutY="83.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="67.0" text="Novo" />
+               </children>
+            </Pane>
+   </children>
+</VBox>

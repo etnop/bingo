@@ -1,0 +1,111 @@
+.root {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+}
+
+.button {
+    -fx-background-color: #2c8dce;
+    -fx-text-fill: #ffffff;
+    -fx-margin: 20px; 
+}
+
+.button:hover {
+    -fx-background-color: #4c5052;
+}
+.grid-pane {
+    -fx-background-color: #2b2b2b;
+}
+.label {
+    -fx-text-fill: #ffffff;
+}
+.toggle-button {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5c5c5c;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #2c8dce;
+    -fx-text-fill: #ffffff;
+}
+
+.text-field {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5c5c5c;
+}
+
+.text-area {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5c5c5c;
+}
+
+.table-view {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5c5c5c;
+}
+
+
+.table-view .column-header-background {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #5c5c5c;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5c5c5c;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #4c5052;
+    -fx-text-fill: #ffffff;
+}
+.table-view .table-row-cell:odd {
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
+
+}
+.table-view .table-cell {
+    -fx-text-fill: #ffffff;
+}
+.table-view .table-row-cell:even {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+
+}
+.label_numero {
+    /* -fx-border-color: #458f22; */
+    -fx-background-color: #383838;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5%;
+    -fx-alignment: center;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+
+
+}
+.piscar {
+    fx-animation: piscar 1s infinite; /* Define a animação */
+}
+
+@keyframes piscar {
+    0% {
+        fx-background-color: #458f22; /* Cor inicial */
+    }
+    50% {
+        fx-background-color: #ff0000; /* Cor intermediária (pisca) */
+    }
+    100% {
+        fx-background-color: #458f22; /* Retorna à cor inicial */
+    }
+}
